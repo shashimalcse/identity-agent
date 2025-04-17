@@ -5,12 +5,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.oltu.oauth2.as.response.OAuthASResponse;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.OAuthResponse;
-import org.apache.oltu.oauth2.common.message.types.GrantType;
+import org.wso2.carbon.base.ServerConfiguration;
 import org.wso2.carbon.identity.agent.core.model.AgentTokenRequest;
 import org.wso2.carbon.identity.agent.endpoint.util.factory.OAuth2ServiceFactory;
 import org.wso2.carbon.identity.oauth.common.OAuth2ErrorCodes;
 import org.wso2.carbon.identity.oauth.common.OAuthConstants;
-import org.wso2.carbon.identity.oauth.endpoint.util.EndpointUtil;
 import org.wso2.carbon.identity.oauth2.ResponseHeader;
 import org.wso2.carbon.identity.oauth2.bean.OAuthClientAuthnContext;
 import org.wso2.carbon.identity.oauth2.dto.OAuth2AccessTokenReqDTO;
@@ -36,7 +35,8 @@ import javax.ws.rs.core.Response;
 @Path("/auth/token")
 public class AgentTokenEndpoint {
 
-    public static final String BEARER = "Bearer";
+    private static final String BEARER = "Bearer";
+    private static final String PASSWORD_GRANT = "password";
 
 
     @POST
@@ -49,8 +49,8 @@ public class AgentTokenEndpoint {
         AgentTokenRequest agentTokenRequest = new AgentTokenRequest(request);
         OAuth2AccessTokenReqDTO tokenReqDTO = buildAccessTokenReqDTO(agentTokenRequest,
                 (HttpServletRequestWrapper) request, (HttpServletResponseWrapper) response);
-        OAuth2AccessTokenRespDTO oauth2AccessTokenResp =
-                OAuth2ServiceFactory.getOAuth2Service().issueAccessToken(tokenReqDTO);
+        OAuth2AccessTokenRespDTO oauth2AccessTokenResp = OAuth2ServiceFactory.getOAuth2Service()
+                .issueAccessToken(tokenReqDTO);
         if (oauth2AccessTokenResp.getErrorMsg() != null) {
             return handleErrorResponse(oauth2AccessTokenResp);
         } else {
@@ -65,8 +65,7 @@ public class AgentTokenEndpoint {
         OAuthClientAuthnContext oauthClientAuthnContext = new OAuthClientAuthnContext();
         oauthClientAuthnContext.setAuthenticated(true);
         tokenReqDTO.setoAuthClientAuthnContext(oauthClientAuthnContext);
-        String grantType = GrantType.PASSWORD.toString();
-        tokenReqDTO.setGrantType(grantType);
+        tokenReqDTO.setGrantType(PASSWORD_GRANT);
         tokenReqDTO.setClientId("wFMQEtCUZSJsDPn3yA3jukW5E8oa");
         tokenReqDTO.setClientSecret("TYB41oByf_PW_fgh5kpVc68AQgvbevDZwKiatM9Q6zoa");
         tokenReqDTO.setScope(request.getScopes().toArray(new String[0]));
@@ -77,7 +76,7 @@ public class AgentTokenEndpoint {
         tokenReqDTO.setResourceOwnerUsername(request.getAgentId());
         tokenReqDTO.setResourceOwnerPassword(request.getAgentSecret());
 
-        tokenReqDTO.addAuthenticationMethodReference(grantType);
+        tokenReqDTO.addAuthenticationMethodReference(PASSWORD_GRANT);
         return tokenReqDTO;
     }
 
@@ -167,7 +166,17 @@ public class AgentTokenEndpoint {
                 .setError(OAuth2ErrorCodes.INVALID_CLIENT)
                 .setErrorDescription(errorMessage).buildJSONMessage();
         return Response.status(response.getResponseStatus())
-                .header(OAuthConstants.HTTP_RESP_HEADER_AUTHENTICATE, EndpointUtil.getRealmInfo())
+                .header(OAuthConstants.HTTP_RESP_HEADER_AUTHENTICATE, getRealmInfo())
                 .entity(response.getBody()).build();
+    }
+
+    public static String getRealmInfo() {
+
+        return "Basic realm=" + getHostName();
+    }
+
+    public static String getHostName() {
+
+        return ServerConfiguration.getInstance().getFirstProperty("HostName");
     }
 }
