@@ -7,11 +7,12 @@ import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.OAuthResponse;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.wso2.carbon.identity.agent.core.model.AgentTokenRequest;
+import org.wso2.carbon.identity.agent.endpoint.util.factory.OAuth2ServiceFactory;
 import org.wso2.carbon.identity.oauth.common.OAuth2ErrorCodes;
 import org.wso2.carbon.identity.oauth.common.OAuthConstants;
 import org.wso2.carbon.identity.oauth.endpoint.util.EndpointUtil;
-import org.wso2.carbon.identity.oauth.endpoint.util.factory.OAuth2ServiceFactory;
 import org.wso2.carbon.identity.oauth2.ResponseHeader;
+import org.wso2.carbon.identity.oauth2.bean.OAuthClientAuthnContext;
 import org.wso2.carbon.identity.oauth2.dto.OAuth2AccessTokenReqDTO;
 import org.wso2.carbon.identity.oauth2.dto.OAuth2AccessTokenRespDTO;
 import org.wso2.carbon.identity.oauth2.token.handlers.response.OAuth2TokenResponse;
@@ -61,6 +62,9 @@ public class AgentTokenEndpoint {
             httpServletRequestWrapper, HttpServletResponseWrapper httpServletResponseWrapper) {
 
         OAuth2AccessTokenReqDTO tokenReqDTO = new OAuth2AccessTokenReqDTO();
+        OAuthClientAuthnContext oauthClientAuthnContext = new OAuthClientAuthnContext();
+        oauthClientAuthnContext.setAuthenticated(true);
+        tokenReqDTO.setoAuthClientAuthnContext(oauthClientAuthnContext);
         String grantType = GrantType.PASSWORD.toString();
         tokenReqDTO.setGrantType(grantType);
         tokenReqDTO.setClientId("wFMQEtCUZSJsDPn3yA3jukW5E8oa");
