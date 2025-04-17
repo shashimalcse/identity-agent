@@ -73,19 +73,6 @@
             <param-name>jaxrs.address</param-name>
             <param-value>/</param-value>
         </init-param>
-        <init-param>
-            <param-name>jaxrs.providers</param-name>
-            <param-value>
-                org.wso2.carbon.identity.oauth.endpoint.expmapper.InvalidRequestExceptionMapper
-            </param-value>
-        </init-param>
-
-        <init-param>
-            <param-name>jaxrs.inInterceptors</param-name>
-            <param-value>
-                org.wso2.carbon.identity.oauth.client.authn.filter.OAuthClientAuthenticatorProxy
-            </param-value>
-        </init-param>
 
     </servlet>
 
