@@ -39,3 +39,7 @@ build/
 
 ### IntelliJ IDEA ###
 .idea/
+
+### OpenAPI ###
+.openapi-generator
+.openapi-generator-ignore
