@@ -10,7 +10,7 @@ security:
   - OAuth2: []
 
 paths:
-  /agents:
+  /:
     get:
       tags:
         - Agents
@@ -81,7 +81,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /agents/{agentId}:
+  /{agentId}:
     parameters:
       - name: agentId
         in: path
@@ -172,7 +172,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /agents/{agent-id}/credentials:
+  /{agent-id}/credentials:
       parameters:
         - name: agent-id
           in: path
@@ -218,7 +218,7 @@ paths:
           - OAuth2Security: [write:agent_credentials]
           - ApiKeyAuth: []
 
-  /agents/{agent-id}/credentials/{credential-id}:
+  /{agent-id}/credentials/{credential-id}:
     parameters:
       - name: agent-id
         in: path

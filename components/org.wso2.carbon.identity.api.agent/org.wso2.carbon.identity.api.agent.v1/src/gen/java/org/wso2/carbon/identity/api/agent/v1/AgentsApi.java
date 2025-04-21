@@ -39,7 +39,7 @@ import io.swagger.annotations.*;
 
 import javax.validation.constraints.*;
 
-@Path("/agents")
+@Path("/")
 @Api(description = "The agents API")
 
 public class AgentsApi  {
