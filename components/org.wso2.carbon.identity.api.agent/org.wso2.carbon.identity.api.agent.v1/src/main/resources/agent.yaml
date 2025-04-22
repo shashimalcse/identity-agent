@@ -322,12 +322,10 @@ components:
           example: "f0e9d8c7-b6a5-4321-fedc-ba9876543210"
         createdAt:
           type: string
-          format: date-time
           description: Timestamp when the agent was created.
           readOnly: true
         updatedAt:
           type: string
-          format: date-time
           description: Timestamp when the agent was last updated.
           readOnly: true
       required:

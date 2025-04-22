@@ -2,6 +2,7 @@ package org.wso2.carbon.identity.api.agent.v1.core;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.identity.api.agent.v1.Agent;
 import org.wso2.carbon.identity.api.agent.v1.common.AgentConstants;
 import org.wso2.carbon.identity.api.agent.v1.error.APIError;
 import org.wso2.carbon.identity.api.agent.v1.error.ErrorResponse;
@@ -38,26 +39,31 @@ public class AgentService {
      *
      * @return List of agents.
      */
-    public List<String> getAgents() {
-        List<String> agents = new ArrayList<>();
+    public List<Agent> getAgents() {
+        List<Agent> agents = new ArrayList<>();
 
         try {
-            // UserStoreManager userStoreManager = realmService.getTenantUserRealm(IdentityTenantUtil
-            //         .getTenantId(getTenantDomain())).getUserStoreManager();
+
             AbstractUserStoreManager userStoreManager = (AbstractUserStoreManager) realmService
                     .getTenantUserRealm(IdentityTenantUtil
                             .getTenantId(getTenantDomain()))
                     .getUserStoreManager();
+
             if (userStoreManager == null) {
                 if (log.isDebugEnabled()) {
                     log.debug("Unable to retrieve userstore manager.");
                 }
                 throw handleError(Response.Status.INTERNAL_SERVER_ERROR, SERVER_ERROR_RETRIEVING_USERSTORE_MANAGER);
             }
-            List<org.wso2.carbon.user.core.common.User> users = userStoreManager.listUsersWithID("*", -1);
-                for (org.wso2.carbon.user.core.common.User user : users) {
-                    agents.add(user.getUserID());
-                }
+
+            AbstractUserStoreManager agentStoreManager = (AbstractUserStoreManager) userStoreManager
+                    .getSecondaryUserStoreManager("AGENT");
+            List<org.wso2.carbon.user.core.common.User> users = agentStoreManager.listUsersWithID("*", -1);
+            for (org.wso2.carbon.user.core.common.User user : users) {
+                Agent a = new Agent();
+                a.setId(user.getUserID());
+                agents.add(a);
+            }
             return agents;
         } catch (UserStoreException e) {
             throw handleException(e, SERVER_ERROR_RETRIEVING_USERSTORE_MANAGER);

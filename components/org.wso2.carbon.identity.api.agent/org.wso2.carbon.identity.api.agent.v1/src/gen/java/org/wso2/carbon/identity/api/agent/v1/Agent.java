@@ -38,8 +38,10 @@ public class Agent  {
     private String version;
     private String url;
     private String owner;
-    private java.util.Date createdAt;
-    private java.util.Date updatedAt;
+
+    private String createdAt;
+    private String updatedAt;
+
 
     /**
     * Unique identifier for the agent (usually assigned by the server).
@@ -164,7 +166,7 @@ public class Agent  {
     /**
     * Timestamp when the agent was created.
     **/
-    public Agent createdAt(java.util.Date createdAt) {
+    public Agent createdAt(String createdAt) {
 
         this.createdAt = createdAt;
         return this;
@@ -173,17 +175,17 @@ public class Agent  {
     @ApiModelProperty(value = "Timestamp when the agent was created.")
     @JsonProperty("createdAt")
     @Valid
-    public java.util.Date getCreatedAt() {
+    public String getCreatedAt() {
         return createdAt;
     }
-    public void setCreatedAt(java.util.Date createdAt) {
+    public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
 
     /**
     * Timestamp when the agent was last updated.
     **/
-    public Agent updatedAt(java.util.Date updatedAt) {
+    public Agent updatedAt(String updatedAt) {
 
         this.updatedAt = updatedAt;
         return this;
@@ -192,10 +194,10 @@ public class Agent  {
     @ApiModelProperty(value = "Timestamp when the agent was last updated.")
     @JsonProperty("updatedAt")
     @Valid
-    public java.util.Date getUpdatedAt() {
+    public String getUpdatedAt() {
         return updatedAt;
     }
-    public void setUpdatedAt(java.util.Date updatedAt) {
+    public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
     }
 
