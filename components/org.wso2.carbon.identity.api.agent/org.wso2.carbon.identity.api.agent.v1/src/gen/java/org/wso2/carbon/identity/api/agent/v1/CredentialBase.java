@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.api.agent.v1.model;
+package org.wso2.carbon.identity.api.agent.v1;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;

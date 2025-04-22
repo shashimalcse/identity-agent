@@ -19,21 +19,21 @@
 package org.wso2.carbon.identity.api.agent.v1;
 
 import org.wso2.carbon.identity.api.agent.v1.*;
-import org.wso2.carbon.identity.api.agent.v1.model.*;
+import org.wso2.carbon.identity.api.agent.v1.*;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import java.io.InputStream;
 import java.util.List;
-import org.wso2.carbon.identity.api.agent.v1.model.Agent;
-import org.wso2.carbon.identity.api.agent.v1.model.AgentCreateRequest;
-import org.wso2.carbon.identity.api.agent.v1.model.AgentCredentialResponse;
-import org.wso2.carbon.identity.api.agent.v1.model.AgentUpdateRequest;
-import org.wso2.carbon.identity.api.agent.v1.model.CredentialBase;
-import org.wso2.carbon.identity.api.agent.v1.model.ErrorResponse;
+import org.wso2.carbon.identity.api.agent.v1.Agent;
+import org.wso2.carbon.identity.api.agent.v1.AgentCreateRequest;
+import org.wso2.carbon.identity.api.agent.v1.AgentCredentialResponse;
+import org.wso2.carbon.identity.api.agent.v1.AgentUpdateRequest;
+import org.wso2.carbon.identity.api.agent.v1.CredentialBase;
+import org.wso2.carbon.identity.api.agent.v1.ErrorResponse;
 import javax.ws.rs.core.Response;
 
 
-public interface AgentsApiService {
+public interface DefaultApiService {
 
       public Response addAgentCredential(String agentId, CredentialBase credentialBase);
 
@@ -43,7 +43,7 @@ public interface AgentsApiService {
 
       public Response getAgentById(String agentId);
 
-      public Response listAgents();
+      public Response listAgents(Integer limit, Integer offset);
 
       public Response updateAgent(String agentId, AgentUpdateRequest agentUpdateRequest);
 

@@ -18,14 +18,14 @@
 
 package org.wso2.carbon.identity.api.agent.v1.factories;
 
-import org.wso2.carbon.identity.api.agent.v1.AgentsApiService;
-import org.wso2.carbon.identity.api.agent.v1.impl.AgentsApiServiceImpl;
+import org.wso2.carbon.identity.api.agent.v1.DefaultApiService;
+import org.wso2.carbon.identity.api.agent.v1.impl.DefaultApiServiceImpl;
 
-public class AgentsApiServiceFactory {
+public class DefaultApiServiceFactory {
 
-   private final static AgentsApiService SERVICE = new AgentsApiServiceImpl();
+   private final static DefaultApiService SERVICE = new DefaultApiServiceImpl();
 
-   public static AgentsApiService getAgentsApi() {
+   public static DefaultApiService getDefaultApi() {
 
       return SERVICE;
    }

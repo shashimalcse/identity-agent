@@ -23,14 +23,14 @@ import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import java.io.InputStream;
 import java.util.List;
 
-import org.wso2.carbon.identity.api.agent.v1.model.Agent;
-import org.wso2.carbon.identity.api.agent.v1.model.AgentCreateRequest;
-import org.wso2.carbon.identity.api.agent.v1.model.AgentCredentialResponse;
-import org.wso2.carbon.identity.api.agent.v1.model.AgentUpdateRequest;
-import org.wso2.carbon.identity.api.agent.v1.model.CredentialBase;
-import org.wso2.carbon.identity.api.agent.v1.model.ErrorResponse;
-import org.wso2.carbon.identity.api.agent.v1.AgentsApiService;
-import org.wso2.carbon.identity.api.agent.v1.factories.AgentsApiServiceFactory;
+import org.wso2.carbon.identity.api.agent.v1.Agent;
+import org.wso2.carbon.identity.api.agent.v1.AgentCreateRequest;
+import org.wso2.carbon.identity.api.agent.v1.AgentCredentialResponse;
+import org.wso2.carbon.identity.api.agent.v1.AgentUpdateRequest;
+import org.wso2.carbon.identity.api.agent.v1.CredentialBase;
+import org.wso2.carbon.identity.api.agent.v1.ErrorResponse;
+import org.wso2.carbon.identity.api.agent.v1.DefaultApiService;
+import org.wso2.carbon.identity.api.agent.v1.factories.DefaultApiServiceFactory;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
@@ -40,15 +40,15 @@ import io.swagger.annotations.*;
 import javax.validation.constraints.*;
 
 @Path("/")
-@Api(description = "The agents API")
+@Api(description = "The  API")
 
-public class AgentsApi  {
+public class DefaultApi  {
 
-    private final AgentsApiService delegate;
+    private final DefaultApiService delegate;
 
-    public AgentsApi() {
+    public DefaultApi() {
 
-        this.delegate = AgentsApiServiceFactory.getAgentsApi();
+        this.delegate = DefaultApiServiceFactory.getDefaultApi();
     }
 
     @Valid
@@ -56,7 +56,7 @@ public class AgentsApi  {
     @Path("/{agent-id}/credentials")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @ApiOperation(value = "Add a new credential for an agent", notes = "Creates and associates a new credential with the specified AI Agent. The specific type and details are determined by the request body based on `credentialType`. <b>Scope required:</b> `internal_org_agent_mgt_update`", response = AgentCredentialResponse.class, tags={ "Agent Credentials", })
+    @ApiOperation(value = "Add a new credential for an agent", notes = "Creates and associates a new credential with the specified AI Agent. The specific type and details are determined by the request body based on `credentialType`. <b>Scope required:</b> `internal_org_agent_mgt_update`", response = AgentCredentialResponse.class, tags={  })
     @ApiResponses(value = { 
         @ApiResponse(code = 201, message = "Credential successfully created.", response = AgentCredentialResponse.class),
         @ApiResponse(code = 400, message = "Bad Request. The request could not be understood due to malformed syntax or invalid data.", response = ErrorResponse.class),
@@ -75,7 +75,7 @@ public class AgentsApi  {
     
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @ApiOperation(value = "Create a new Agent", notes = "Creates a new agent. Allows requesting server-side credential generation. <b>Scope required:</b> `internal_org_agent_mgt_create`", response = Agent.class, tags={ "Agents", })
+    @ApiOperation(value = "Create a new Agent", notes = "Creates a new agent. Allows requesting server-side credential generation. <b>Scope required:</b> `internal_org_agent_mgt_create`", response = Agent.class, tags={  })
     @ApiResponses(value = { 
         @ApiResponse(code = 201, message = "Agent created successfully. The response includes the full Agent object, including generated credentials if requested.", response = Agent.class),
         @ApiResponse(code = 400, message = "Bad Request. The request could not be understood due to malformed syntax or invalid data.", response = ErrorResponse.class),
@@ -93,7 +93,7 @@ public class AgentsApi  {
     @Path("/{agentId}")
     
     @Produces({ "application/json" })
-    @ApiOperation(value = "Delete an Agent", notes = "Deletes a specific agent by ID. <b>Scope required:</b> `internal_org_agent_mgt_delete`", response = Void.class, tags={ "Agents", })
+    @ApiOperation(value = "Delete an Agent", notes = "Deletes a specific agent by ID. <b>Scope required:</b> `internal_org_agent_mgt_delete`", response = Void.class, tags={  })
     @ApiResponses(value = { 
         @ApiResponse(code = 204, message = "Agent deleted successfully. No content.", response = Void.class),
         @ApiResponse(code = 401, message = "Unauthorized. Authentication credentials required or provided credentials are invalid.", response = ErrorResponse.class),
@@ -111,7 +111,7 @@ public class AgentsApi  {
     @Path("/{agentId}")
     
     @Produces({ "application/json" })
-    @ApiOperation(value = "Get a specific Agent by ID", notes = "Returns the details of a specific agent. <b>Scope required:</b> `internal_org_agent_mgt_read`", response = Agent.class, tags={ "Agents", })
+    @ApiOperation(value = "Get a specific Agent by ID", notes = "Returns the details of a specific agent. <b>Scope required:</b> `internal_org_agent_mgt_read`", response = Agent.class, tags={  })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Agent details.", response = Agent.class),
         @ApiResponse(code = 401, message = "Unauthorized. Authentication credentials required or provided credentials are invalid.", response = ErrorResponse.class),
@@ -129,16 +129,16 @@ public class AgentsApi  {
     
     
     @Produces({ "application/json" })
-    @ApiOperation(value = "List all Agents", notes = "Returns a list of all agents. <b>Scope required:</b> `internal_org_agent_mgt_read`", response = Agent.class, responseContainer = "List", tags={ "Agents", })
+    @ApiOperation(value = "List all Agents", notes = "Returns a list of all agents with pagination support. <b>Scope required:</b> `internal_org_agent_mgt_read`", response = Agent.class, responseContainer = "List", tags={  })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "A list of agents.", response = Agent.class, responseContainer = "List"),
         @ApiResponse(code = 401, message = "Unauthorized. Authentication credentials required or provided credentials are invalid.", response = ErrorResponse.class),
         @ApiResponse(code = 403, message = "Forbidden. The authenticated client does not have sufficient permissions (scopes).", response = ErrorResponse.class),
         @ApiResponse(code = 500, message = "Internal Server Error. An unexpected condition was encountered on the server.", response = ErrorResponse.class)
     })
-    public Response listAgents() {
+    public Response listAgents(    @Valid@ApiParam(value = "The maximum number of agents to return.")  @QueryParam("limit") Integer limit,     @Valid@ApiParam(value = "The starting point for the list of agents to return.")  @QueryParam("offset") Integer offset) {
 
-        return delegate.listAgents();
+        return delegate.listAgents(limit,  offset );
     }
 
     @Valid
@@ -146,7 +146,7 @@ public class AgentsApi  {
     @Path("/{agentId}")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @ApiOperation(value = "Update an existing Agent", notes = "Updates the properties of an existing agent. Only include fields to be changed. <b>Scope required:</b> `internal_org_agent_mgt_update`", response = Agent.class, tags={ "Agents", })
+    @ApiOperation(value = "Update an existing Agent", notes = "Updates the properties of an existing agent. Only include fields to be changed. <b>Scope required:</b> `internal_org_agent_mgt_update`", response = Agent.class, tags={  })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Agent updated successfully. Returns the updated agent object.", response = Agent.class),
         @ApiResponse(code = 400, message = "Bad Request. The request could not be understood due to malformed syntax or invalid data.", response = ErrorResponse.class),
@@ -165,7 +165,7 @@ public class AgentsApi  {
     @Path("/{agent-id}/credentials/{credential-id}")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @ApiOperation(value = "Update a specific credential for an agent", notes = "Updates an existing credential associated with the AI Agent. The entire credential object (matching the `credential-id`) should be provided. The `credentialType` in the request body *must* match the existing credential's type. You cannot change the type using PUT. <b>Scope required:</b> `internal_org_agent_mgt_update` ", response = AgentCredentialResponse.class, tags={ "Agent Credentials" })
+    @ApiOperation(value = "Update a specific credential for an agent", notes = "Updates an existing credential associated with the AI Agent. The entire credential object (matching the `credential-id`) should be provided. The `credentialType` in the request body *must* match the existing credential's type. You cannot change the type using PUT. <b>Scope required:</b> `internal_org_agent_mgt_update` ", response = AgentCredentialResponse.class, tags={  })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Credential updated successfully.", response = AgentCredentialResponse.class),
         @ApiResponse(code = 400, message = "Bad Request. The request could not be understood due to malformed syntax or invalid data.", response = ErrorResponse.class),
