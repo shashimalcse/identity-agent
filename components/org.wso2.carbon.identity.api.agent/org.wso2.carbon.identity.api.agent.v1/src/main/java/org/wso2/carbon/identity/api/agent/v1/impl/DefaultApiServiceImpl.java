@@ -22,6 +22,8 @@ import org.wso2.carbon.identity.api.agent.v1.AgentCreateRequest;
 import org.wso2.carbon.identity.api.agent.v1.AgentUpdateRequest;
 import org.wso2.carbon.identity.api.agent.v1.CredentialBase;
 import org.wso2.carbon.identity.api.agent.v1.DefaultApiService;
+import org.wso2.carbon.identity.api.agent.v1.core.AgentService;
+import org.wso2.carbon.identity.api.agent.v1.factories.AgentApiServiceFactory;
 
 import javax.ws.rs.core.Response;
 
@@ -29,6 +31,18 @@ import javax.ws.rs.core.Response;
  * Implementation of the DefaultApiService interface, providing methods to manage agents and their credentials.
  */
 public class DefaultApiServiceImpl implements DefaultApiService {
+
+
+    private final AgentService agentService;
+
+    public DefaultApiServiceImpl() {
+
+        try {
+            this.agentService = AgentApiServiceFactory.getAgentService();
+        } catch (IllegalStateException e) {
+            throw new RuntimeException("Error occurred while initiating UserAssociationService.", e);
+        }
+    }
 
     /**
      * Adds a credential for the specified agent.
@@ -89,7 +103,7 @@ public class DefaultApiServiceImpl implements DefaultApiService {
     @Override
     public Response listAgents(Integer limit, Integer offset) {
         // Implementation here
-        return Response.ok().entity("magic!").build();
+        return Response.ok().entity(agentService.getAgents()).build();
     }
 
     /**
