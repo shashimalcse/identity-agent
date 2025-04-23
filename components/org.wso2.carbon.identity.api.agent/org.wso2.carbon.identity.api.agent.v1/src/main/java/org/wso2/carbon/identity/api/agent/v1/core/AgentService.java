@@ -1,5 +1,6 @@
 package org.wso2.carbon.identity.api.agent.v1.core;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.api.agent.v1.Agent;
@@ -9,10 +10,14 @@ import org.wso2.carbon.identity.api.agent.v1.error.ErrorResponse;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
+import org.wso2.carbon.user.core.model.UniqueIDUserClaimSearchEntry;
 import org.wso2.carbon.user.core.service.RealmService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.core.Response;
 
@@ -28,6 +33,10 @@ public class AgentService {
 
     private static final Log log = LogFactory.getLog(AgentService.class);
 
+    private static final Integer DEFAULT_LIMIT = 20;
+
+    private static final Integer DEFAULT_OFFSET = 0;
+
     public AgentService(RealmService realmService) {
 
         this.realmService = realmService;
@@ -39,8 +48,21 @@ public class AgentService {
      *
      * @return List of agents.
      */
-    public List<Agent> getAgents() {
+    public List<Agent> getAgents(Integer limit, Integer offset) {
+        // Check the value of limit and offset, if not available define default values
+        if (limit == null || limit <= 0) {
+            limit = DEFAULT_LIMIT; // Default limit value
+        }
+        if (offset == null || offset < 0) {
+            offset = DEFAULT_OFFSET; // Default offset value
+        }
+
         List<Agent> agents = new ArrayList<>();
+
+        List<String> claimURIList = new ArrayList<>();
+        claimURIList.add("http://wso2.org/claims/displayName");
+        claimURIList.add("http://wso2.org/claims/created");
+        claimURIList.add("http://wso2.org/claims/metadata.version");
 
         try {
 
@@ -58,16 +80,51 @@ public class AgentService {
 
             AbstractUserStoreManager agentStoreManager = (AbstractUserStoreManager) userStoreManager
                     .getSecondaryUserStoreManager("AGENT");
-            List<org.wso2.carbon.user.core.common.User> users = agentStoreManager.listUsersWithID("*", -1);
+            List<org.wso2.carbon.user.core.common.User> users = agentStoreManager.listUsersWithID("*", limit, offset);
+
+            // obtain user claim values
+            List<UniqueIDUserClaimSearchEntry> searchEntries;
+            
+            searchEntries = agentStoreManager.getUsersClaimValuesWithID(users
+                    .stream()
+                    .map(org.wso2.carbon.user.core.common.User::getUserID)
+                    .collect(Collectors.toList()), claimURIList, null);
+
+            // Map<String, Map<String, String>> userClaimsMap = new HashMap<>();
+
             for (org.wso2.carbon.user.core.common.User user : users) {
+
+                Map<String, String> userClaimValues = new HashMap<>();
+                for (UniqueIDUserClaimSearchEntry entry : searchEntries) {
+                    if (entry.getUser() != null && StringUtils.isNotBlank(entry.getUser().getUserID())
+                            && entry.getUser().getUserID().equals(user.getUserID())) {
+                        userClaimValues = entry.getClaims();
+                    }
+                }
                 Agent a = new Agent();
                 a.setId(user.getUserID());
+                a.setName(user.getUsername());
+                a.setName(userClaimValues.get("http://wso2.org/claims/displayName"));
+                a.setCreatedAt(userClaimValues.get("http://wso2.org/claims/created"));
+                a.setVersion(userClaimValues.get("http://wso2.org/claims/metadata.version"));
                 agents.add(a);
             }
-            return agents;
+
+
+
+            // for (Agent agent : agents) {
+            //     Map<String, String> claims = userClaimsMap.get(agent.getId());
+            //     if (claims != null) {
+            //         agent.setName(claims.get("http://wso2.org/claims/displayName"));
+            //         agent.setCreatedAt(claims.get("http://wso2.org/claims/created"));
+            //         agent.setVersion(claims.get("http://wso2.org/claims/metadata.version"));
+            //     }
+            // }
+
         } catch (UserStoreException e) {
             throw handleException(e, SERVER_ERROR_RETRIEVING_USERSTORE_MANAGER);
         }
+        return agents;
     }
 
     private String getTenantDomain() {

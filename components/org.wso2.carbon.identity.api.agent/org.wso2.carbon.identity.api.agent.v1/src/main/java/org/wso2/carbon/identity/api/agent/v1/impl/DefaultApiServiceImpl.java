@@ -103,7 +103,7 @@ public class DefaultApiServiceImpl implements DefaultApiService {
     @Override
     public Response listAgents(Integer limit, Integer offset) {
         // Implementation here
-        return Response.ok().entity(agentService.getAgents()).build();
+        return Response.ok().entity(agentService.getAgents(limit, offset)).build();
     }
 
     /**
