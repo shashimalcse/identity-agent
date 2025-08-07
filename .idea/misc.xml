@@ -10,7 +10,9 @@
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/components/org.wso2.carbon.identity.agent.core/agent/pom.xml" />
+        <option value="$PROJECT_DIR$/components/org.wso2.carbon.identity.agent.core/pom.xml" />
         <option value="$PROJECT_DIR$/components/org.wso2.carbon.identity.agent.core/src/pom.xml" />
+        <option value="$PROJECT_DIR$/components/org.wso2.carbon.identity.agent.endpoint/pom.xml" />
       </set>
     </option>
   </component>
